@@ -47,6 +47,11 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+//
+//graph - работа с графами
+//За основу взят пример из стандартного набора обучающих примеров QT - elasticnodes:
+//https://doc.qt.io/qt-5/qtwidgets-graphicsview-elasticnodes-example.html
+//
 #include "pch.h"
 #include "edge.h"
 #include "node.h"
@@ -87,8 +92,8 @@ QList<Edge *> Node::edges() const
 //! [8]
 QRectF Node::boundingRect() const
 {
-    qreal adjust = 100;
-    return QRectF( -10 - adjust, -10 - adjust, 33 + adjust, 33 + adjust);
+    qreal adjust = 2;
+    return QRectF( -size_el/2 - adjust, -size_el/2 - adjust, size_el + adjust, size_el + adjust);
 }
 //! [8]
 
@@ -102,7 +107,7 @@ QPainterPath Node::shape() const
 //! [9]
 
 //! [10]
-void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
+void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
    /* painter->setPen(Qt::NoPen);
     painter->setBrush(Qt::white);
@@ -110,19 +115,21 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 	if(way==0) painter->setPen(QPen(Qt::red, 0));
     else painter->setPen(QPen(Qt::black, 0));
     painter->drawEllipse(-size_el/2, -size_el/2, size_el, size_el);
+
+	QFont font = painter->font();
+	font.setBold(true);
+	font.setPointSize(7);
+	painter->setFont(font);
+
 	painter->drawText(QPoint(-10,5), QString::number(number)+" - " +QString::number(way));	//выводим номер узла
 
 }
-//! [10]
-
-//! [11]
 QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     switch (change) {
     case ItemPositionHasChanged:
         foreach (Edge *edge, edgeList)
             edge->adjust();
-//        graph->itemMoved();
         break;
     default:
         break;
@@ -130,9 +137,6 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
 
     return QGraphicsItem::itemChange(change, value);
 }
-//! [11]
-
-//! [12]
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     update();
@@ -144,4 +148,3 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     update();
     QGraphicsItem::mouseReleaseEvent(event);
 }
-//! [12]

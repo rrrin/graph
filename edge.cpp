@@ -47,6 +47,11 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+//
+//graph - работа с графами
+//«а основу вз€т пример из стандартного набора обучающих примеров QT - elasticnodes:
+//https://doc.qt.io/qt-5/qtwidgets-graphicsview-elasticnodes-example.html
+//
 #include "pch.h"
 #include "edge.h"
 #include "node.h"
@@ -131,6 +136,12 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
     // Draw the line itself
     painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter->drawLine(line);
+
+	QFont font = painter->font();
+	font.setBold(true);
+	font.setPointSize(12);
+	painter->setFont(font);
+
 	painter->drawText(line.center(), QString::number(length));
 //! [5]
 

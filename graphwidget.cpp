@@ -47,6 +47,11 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+//
+//graph - работа с графами
+//«а основу вз€т пример из стандартного набора обучающих примеров QT - elasticnodes:
+//https://doc.qt.io/qt-5/qtwidgets-graphicsview-elasticnodes-example.html
+//
 #include "pch.h"
 #include "graphwidget.h"
 #include "edge.h"
@@ -75,7 +80,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     setTransformationAnchor(AnchorUnderMouse);
     scale(qreal(0.8), qreal(0.8));
     setMinimumSize(800, 800);
-    setWindowTitle(tr("Elastic Nodes"));
+    setWindowTitle(tr("Edge + Nodes"));
 
 	createGraph();
 }

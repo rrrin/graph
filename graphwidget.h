@@ -87,7 +87,7 @@ protected:
     void scaleView(qreal scaleFactor);
 
 	void createGraph();
-//	QGraphicsScene *scene;
+
 };
 //! [0]
 
