@@ -1,0 +1,17 @@
+#ifndef PCH_H
+#define PCH_H
+#include <math.h>
+#include <QPainter>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsItem>
+#include <QStyleOption>
+#include <QKeyEvent>
+#include <QRandomGenerator>
+#include <qmath.h>
+#include <QList>
+#include <vector>
+#include <iostream>
+#include <sstream>
+#endif //PCH_H
