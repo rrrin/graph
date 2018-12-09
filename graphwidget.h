@@ -52,18 +52,24 @@
 #define GRAPHWIDGET_H
 
 #include <QGraphicsView>
-
-
+#include <vector>
+#include <assert.h>
+using namespace std;
 class Node;
 
 //! [0]
 class GraphWidget : public QGraphicsView
 {
-    Q_OBJECT
+	vector<double> n;
+	Q_OBJECT
+		
 
 public:
     GraphWidget(QWidget *parent = 0);
-
+	GraphWidget(vector<double> a)
+	{
+		n = a;
+	}
 //    void itemMoved();
 
 public slots:

@@ -55,8 +55,8 @@
 #include <QPainter>
 
 //! [0]
-Edge::Edge(Node *sourceNode, Node *destNode)
-    : arrowSize(10)
+Edge::Edge(Node *sourceNode, Node *destNode, double len)
+    : arrowSize(10), length(len)
 {
     setAcceptedMouseButtons(0);
     source = sourceNode;
@@ -91,7 +91,7 @@ void Edge::adjust()
     prepareGeometryChange();
 
     if (length > qreal(20.)) {
-        QPointF edgeOffset((line.dx() * 10) / length, (line.dy() * 10) / length);
+        QPointF edgeOffset((line.dx() * 20) / length, (line.dy() * 20) / length);
         sourcePoint = line.p1() + edgeOffset;
         destPoint = line.p2() - edgeOffset;
     } else {
@@ -131,11 +131,12 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
     // Draw the line itself
     painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter->drawLine(line);
+	painter->drawText(line.center(), QString::number(length));
 //! [5]
 
 //! [6]
     // Draw the arrows
-    double angle = std::atan2(-line.dy(), line.dx());
+   /* double angle = std::atan2(-line.dy(), line.dx());
 
     QPointF sourceArrowP1 = sourcePoint + QPointF(sin(angle + M_PI / 3) * arrowSize,
                                                   cos(angle + M_PI / 3) * arrowSize);
@@ -149,5 +150,6 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
     painter->setBrush(Qt::black);
     painter->drawPolygon(QPolygonF() << line.p1() << sourceArrowP1 << sourceArrowP2);
     painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);
+*/
 }
 //! [6]

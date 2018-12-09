@@ -59,7 +59,7 @@ class Node;
 class Edge : public QGraphicsItem
 {
 public:
-    Edge(Node *sourceNode, Node *destNode);
+    Edge(Node *sourceNode, Node *destNode, double len);
 
     Node *sourceNode() const;
     Node *destNode() const;
@@ -75,7 +75,7 @@ protected:
 
 private:
     Node *source, *dest;
-
+	double length;
     QPointF sourcePoint;
     QPointF destPoint;
     qreal arrowSize;

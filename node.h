@@ -64,7 +64,7 @@ QT_END_NAMESPACE
 class Node : public QGraphicsItem
 {
 public:
-    Node(GraphWidget *graphWidget, int nmb);
+    Node(GraphWidget *graphWidget, int nmb, int a, int rad);
 
     void addEdge(Edge *edge);
     QList<Edge *> edges() const;
@@ -85,7 +85,11 @@ protected:
 private:
     QList<Edge *> edgeList;
     GraphWidget *graph;
+public:
 	int number;
+	int way;
+	int size_el;
+
 };
 //! [0]
 

@@ -56,6 +56,7 @@
 #include <sstream>
 #include <math.h>
 #include<fstream>
+#include <assert.h>
 
 #include <QKeyEvent>
 #include <QRandomGenerator>
@@ -66,14 +67,14 @@ GraphWidget::GraphWidget(QWidget *parent)
 {
 	QGraphicsScene * myscene = new QGraphicsScene(this);
 	myscene->setItemIndexMethod(QGraphicsScene::NoIndex);
-	myscene->setSceneRect(-200, -200, 400, 400);
+	myscene->setSceneRect(-400, -400, 800, 800);
     setScene(myscene);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     scale(qreal(0.8), qreal(0.8));
-    setMinimumSize(400, 400);
+    setMinimumSize(800, 800);
     setWindowTitle(tr("Elastic Nodes"));
 
 	createGraph();
@@ -110,18 +111,11 @@ void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
 
     // Shadow
     QRectF sceneRect = this->sceneRect();
- 
-    // Text
-    
 
     QFont font = painter->font();
     font.setBold(true);
     font.setPointSize(14);
     painter->setFont(font);
- //   painter->setPen(Qt::lightGray);
-//    painter->drawText(textRect.translated(2, 2), message);
- /*   painter->setPen(Qt::black);
-    painter->drawText(textRect, message);*/
 }
 void GraphWidget::scaleView(qreal scaleFactor)
 {
@@ -136,7 +130,7 @@ void GraphWidget::shuffle()
 {
     foreach (QGraphicsItem *item, scene()->items()) {
         if (qgraphicsitem_cast<Node *>(item))
-            item->setPos(-150 + QRandomGenerator::global()->bounded(300), -150 + QRandomGenerator::global()->bounded(300));
+            item->setPos(-300 + QRandomGenerator::global()->bounded(600), -2*150 + QRandomGenerator::global()->bounded(600));
     }
 }
 
@@ -149,9 +143,6 @@ void GraphWidget::zoomOut()
 {
     scaleView(1 / qreal(1.2));
 }
-//
-//  создание графа
-//
 
 typedef vector<vector<double>> mat_t;
 
@@ -221,13 +212,13 @@ public:
 		return d;
 	}
 
-	void Way()
+	vector<double> Way()
 	{
 		mat_t N = M;
 		int n = N.size();
-		int x = 0;
+		int x = 1;
 		M[x] = way_a(N, x);
-
+		return M[x];
 	}
 
 	void print_mat()
@@ -249,21 +240,21 @@ public:
 	}
 };
 
-
-
 void GraphWidget::createGraph()
 {
 	ifstream file_in;
 	file_in.open("text.txt");
 	graph G(file_in);
-	QGraphicsScene *myscene = scene();
 	mat_t N = G.matr();
+	vector<double> N1=G.Way();
+	
+	QGraphicsScene *myscene = scene();
 	const int n_graph = N.size();
 	QVector< Node*> nodes;
-//Создаем список узлов
+
 	for (int i = 0; i < n_graph; ++i)
 	{
-		nodes.push_back(new Node(this,i));
+		nodes.push_back(new Node(this,i, N1[i], 40));
 		myscene->addItem(nodes[i]);
 	}
 	for (int i = 0; i < n_graph; i++)
@@ -271,36 +262,16 @@ void GraphWidget::createGraph()
 		for (int j = i; j < n_graph; j++)
 		{
 			if (N[i][j]!=0)
-				myscene->addItem(new Edge(nodes[i], nodes[j]));
+				myscene->addItem(new Edge(nodes[i], nodes[j], N[i][j]));
 		}
 	}
-//создаем список ребер
-	//myscene->addItem(new Edge(nodes[0], nodes[1]));	// , 10));
-	//myscene->addItem(new Edge(nodes[2-1], nodes[3-1]));	// , 10));
-	//myscene->addItem(new Edge(nodes[2-1], nodes[5-1]));	// , 10));
-	//myscene->addItem(new Edge(nodes[3-1], nodes[6-1]));	// , 10));
-	//myscene->addItem(new Edge(nodes[4-1], nodes[1-1]));	// , 10));
-	//myscene->addItem(new Edge(nodes[4-1], nodes[5-1]));	// , 10));
-	//myscene->addItem(new Edge(nodes[5-1], nodes[6-1]));	// , 10));
-	//myscene->addItem(new Edge(nodes[5-1], nodes[8-1]));	// , 10));
-	//myscene->addItem(new Edge(nodes[6-1], nodes[9-1]));	// , 10));
-	//myscene->addItem(new Edge(nodes[7-1], nodes[4-1]));	// , 10));
-	//myscene->addItem(new Edge(nodes[8-1], nodes[7-1]));	// , 10));
-	//myscene->addItem(new Edge(nodes[9-1], nodes[8-1]));	// , 10));
-								
-//определяем позицию на экране
-	for (int i=0; i<n_graph; i++)
-		nodes[i]->setPos(i*10, i%4);
+	double a = 2*M_PI / n_graph;
+	for (int i = 0; i < n_graph; i++)
+	{
+		nodes[i]->setPos(200 * cos(i*a), 200 * sin(i*a));
+		assert(i == nodes[i]->number);
+	}
+	
 
-/*
-	nodes[0]->setPos(-75, -50);
-	nodes[1]->setPos(0, -50);
-	nodes[2]->setPos(50, -50);
-	nodes[3]->setPos(-50, 0);
-	nodes[4]->setPos(0, 0);
-	nodes[5]->setPos(50, 0);
-	nodes[6]->setPos(-50, 50);
-	nodes[7]->setPos(0, 50);
-	nodes[8]->setPos(50, 50);*/
-
+	file_in.close();
 }

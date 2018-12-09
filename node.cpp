@@ -58,9 +58,11 @@
 #include <QStyleOption>
 
 //! [0]
-Node::Node(GraphWidget *graphWidget, int lng)
+Node::Node(GraphWidget *graphWidget, int lng, int a, int rad)
     : graph(graphWidget)
 	, number(lng)
+	, way(a)
+	, size_el(rad)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
@@ -85,8 +87,8 @@ QList<Edge *> Node::edges() const
 //! [8]
 QRectF Node::boundingRect() const
 {
-    qreal adjust = 2;
-    return QRectF( -10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
+    qreal adjust = 100;
+    return QRectF( -10 - adjust, -10 - adjust, 33 + adjust, 33 + adjust);
 }
 //! [8]
 
@@ -94,7 +96,7 @@ QRectF Node::boundingRect() const
 QPainterPath Node::shape() const
 {
     QPainterPath path;
-    path.addEllipse(-10, -10, 20, 20);
+    path.addEllipse(-size_el/2, -size_el/2, size_el, size_el);
     return path;
 }
 //! [9]
@@ -105,10 +107,11 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
    /* painter->setPen(Qt::NoPen);
     painter->setBrush(Qt::white);
     painter->drawEllipse(-10, -10, 20, 20);*/
+	if(way==0) painter->setPen(QPen(Qt::red, 0));
+    else painter->setPen(QPen(Qt::black, 0));
+    painter->drawEllipse(-size_el/2, -size_el/2, size_el, size_el);
+	painter->drawText(QPoint(-10,5), QString::number(number)+" - " +QString::number(way));	//выводим номер узла
 
-    painter->setPen(QPen(Qt::black, 0));
-    painter->drawEllipse(-10, -10, 20, 20);
-	painter->drawText(QPoint(0, 0), QString::number(number));	//выводим номер узла
 }
 //! [10]
 
