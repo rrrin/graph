@@ -115,11 +115,11 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 	if(way==0) painter->setPen(QPen(Qt::red, 0));
     else painter->setPen(QPen(Qt::black, 0));
     painter->drawEllipse(-size_el/2, -size_el/2, size_el, size_el);
-
+/*
 	QFont font = painter->font();
 	font.setBold(true);
-	font.setPointSize(7);
-	painter->setFont(font);
+	font.setPointSize(8);
+	painter->setFont(font);*/
 
 	painter->drawText(QPoint(-10,5), QString::number(number)+" - " +QString::number(way));	//выводим номер узла
 

@@ -72,14 +72,14 @@ GraphWidget::GraphWidget(QWidget *parent)
 {
 	QGraphicsScene * myscene = new QGraphicsScene(this);
 	myscene->setItemIndexMethod(QGraphicsScene::NoIndex);
-	myscene->setSceneRect(-400, -400, 800, 800);
+	myscene->setSceneRect(-200, -200, 400, 400);
     setScene(myscene);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     scale(qreal(0.8), qreal(0.8));
-    setMinimumSize(800, 800);
+    setMinimumSize(600, 600);
     setWindowTitle(tr("Edge + Nodes"));
 
 	createGraph();
@@ -151,36 +151,39 @@ void GraphWidget::zoomOut()
 
 typedef vector<vector<double>> mat_t;
 
-//+варианты шаблона
 class graph
 {
 	mat_t M;
 public:
-	graph()
-	{
-		mat_t N(1);
-		N[0][0] = 0;
-		M = N;
-	}
-
 	graph(istream& file)
 	{
-		mat_t ans;
 		string line;
+		getline(file, line);
+		istringstream l_str(line);
+		int n;
+		l_str >> n;
+		M.resize(n);
+		for (size_t i = 0; i < n; i++)
+		{
+			M[i].resize(n);
+		}
+		int i = 0;
+		int j;
 		while (getline(file, line))
 		{
+			j = 0;
 			istringstream l_str(line);
 			double x;
-			vector<double> v;
 			while (l_str >> x)
-				v.push_back(x);
-			assert(!v.empty());
-			ans.push_back(v);
-			assert(ans[0].size() == v.size());
+			{
+				M[i][j] = x;
+				j++;
+			}
+			i++;
 		}
-		M = ans;
 	}
-	vector<double> way_a(const mat_t&N, int a)
+
+	/*vector<double> way_a(const mat_t&N, int a)
 	{
 		int n = N.size();
 		vector<int> b(n);
@@ -216,14 +219,45 @@ public:
 		}
 		return d;
 	}
-
+*/
 	vector<double> Way()
 	{
-		mat_t N = M;
-		int n = N.size();
-		int x = 1;
-		M[x] = way_a(N, x);
-		return M[x];
+		int n = M.size();
+		int a = 0; //вершина, из которой считаем пути
+		vector<int> b(n);
+		vector<int> b1(n);
+		vector<double> d(n);
+		d[a] = 0;
+		for (int i = 0; i < n; i++)
+		{
+			//b1[i] = 1;
+			b[i] = 0;
+			if (i != a) d[i] = DBL_MAX;
+		}
+		for (int i = 0; i<n; i++)
+		{
+			double k = DBL_MAX;
+			int v;
+			for (int j = 0; j < n; j++)
+			{
+				if ((b[j] == 0) && ((d[j] < k)))
+				{
+					k = d[j];
+					v = j;
+				}
+			}
+			b[v] = 1;
+			for (int u = 0; u < n; u++)
+			{
+				if ((M[v][u] != 0) && (b[u] == 0))
+				{
+					if (d[v] + M[v][u] < d[u]) d[u] = d[v] + M[v][u];
+				}
+			}
+		}
+		return d;
+		//M[x] = way_a(N, x);
+		//return M[x];
 	}
 
 	void print_mat()
